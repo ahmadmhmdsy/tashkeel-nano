@@ -141,11 +141,19 @@ line - the same tie-flip as above. The as-emitted column is what the published
 package actually produces, and it is why the fair rows have to say which mark
 order they were scored in.
 
-Held-out witness, `abdou_test`:
+Held-out witness, `abdou_test` (15,091 sentences, 1.54 M words):
 
-| model | DER | DER_nocase | WER | text_preservation |
-|---|---|---|---|---|
-| tashkeel-nano-4p5m | 39.30 | 29.30 | 39.65 | 0.9846 |
+| model | decode arm | DER | DER_nocase | WER | text_preservation |
+|---|---|---|---|---|---|
+| tashkeel-nano-4p5m | `single` | 39.30 | 29.30 | 39.65 | 0.9846 |
+| tashkeel-nano-1p1m | `centered` | 10.23 | 7.77 | 10.69 | 0.9846 |
+
+Both rows are self-reports from `scripts/score_gate.py`, in the arm named. The
+arms differ - the 1.1 M row is the arm its package ships, the 4.5 M row is the
+`single` arm its card quotes - so the two rows are two measurements of two
+models, not an arm-matched head-to-head, and no arm-matched witness sweep of
+both models has been run. `abdou_test` has no published leaderboard, so neither
+row is a comparison against another system.
 
 Per-gate detail for the 4.5 M published checkpoint (step 19,500):
 

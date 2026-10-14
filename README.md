@@ -495,10 +495,13 @@ sources are never fetched without an explicit acknowledgement.
 - **`wikinews2024` is contaminated** — its text is in the training pool. It is
   reported for continuity only and is **excluded** from the registered mean.
 - **`abdou_test` is the honest witness.** It was never trained on by any model in
-  this line. It is reported separately, never folded into the mean; the recorded
-  4.5 M run scores DER 39.30 / `DER_nocase` 29.30 / WER 39.65 /
-  `text_preservation` 0.9846 ([docs/evaluation.md](docs/evaluation.md)), and the
-  1.1 M witness has not been recorded yet.
+  this line. It is reported separately, never folded into the mean. The 4.5 M run
+  (`single` arm) scores DER 39.30 / `DER_nocase` 29.30 / WER 39.65 /
+  `text_preservation` 0.9846, and the 1.1 M run in the arm its package ships
+  (`centered`, NFC) scores DER 10.23 / `DER_nocase` 7.77 / WER 10.69 /
+  `text_preservation` 0.9846 over 15,091 sentences / 1.54 M words
+  ([docs/evaluation.md](docs/evaluation.md)). The two arms are not the same, so
+  read those as two measurements, not as one head-to-head.
 - **DER here is word-level**, not Sadeed's letter-level DER (CE). See above. The
   4.5 M card's `model-index` value **9.91** is Sadeed's DER (CE) on SadeedDiac-25
   under that benchmark's own evaluator and mark-order convention; it is not

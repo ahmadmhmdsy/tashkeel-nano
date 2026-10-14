@@ -280,6 +280,25 @@ python diacritize.py --decode single --file input.txt   # cheaper, slightly wors
 
 ---
 
+## Held-out witness: abdou_test (self-report)
+
+`abdou_tashkeel`'s **test** split was never trained on by any model in this
+line, and it has no published leaderboard, so this is a self-report rather than
+a comparison. In the arm the package ships (`centered`, NFC):
+
+| Metric | Value |
+|---|---|
+| DER | 10.23 |
+| DER (no case) | 7.77 |
+| WER | 10.69 |
+| text preservation | 0.9846 |
+
+15,091 sentences / 1.54 M words, `scripts/score_gate.py`, word-level DER. The
+4.5 M model reports 39.30 on the same witness in the `single` arm; those are
+different arms of two different models, not an arm-matched head-to-head.
+
+---
+
 ## Source code
 
 The pipeline that produced this checkpoint is public:
