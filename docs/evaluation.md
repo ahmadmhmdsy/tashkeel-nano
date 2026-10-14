@@ -88,6 +88,26 @@ that predates the NFC fix and penalises the model for a defect rather than for
 its quality. The corrected fair-decode figure is 22.90. The card has not been
 rewritten; this document and the [README](../README.md) carry the correction.
 
+### Re-running this table
+
+The 1.08 M row is reproducible here from the shipped weights. Measured
+2026-10-14 with `scripts/score_gate.py --run models/nano1p1m --config training_config.yaml --decode centered --order nfc`:
+
+| gate | DER (this run) | DER (table above) |
+|---|---|---|
+| fadel_test | 0.051967 | 0.0520 |
+| sadeed25 | 0.117038 | 0.1171 |
+| wikinews2014 | 0.176091 | 0.1764 |
+| **registered mean** | **0.115032** | 0.115148 |
+
+The reference files are byte-identical to the ones behind the table, but 64 of
+2,501 fadel_test lines (50/1,613 sadeed25, 30/394 wikinews2014) differ from the
+recorded predictions by a **single mark** - the same model choosing a different
+member of a near-tie vowel pair. Same weights, same decode rule, same window and
+stride; the residual is argmax tie-flip between the original batch decode and the
+single-sequence decode used here, worth 0.011 percentage points on the mean.
+Quote 11.5 %; the third decimal is not stable.
+
 Held-out witness, `abdou_test`:
 
 | model | DER | DER_nocase | WER | text_preservation |
