@@ -72,7 +72,8 @@ training pool) and `abdou_test` is the never-trained-on witness.
 |---|---|---|---|---|
 | **tashkeel-nano-1p1m** (`centered`, NFC) | 5.20 | 11.71 | 17.64 | **11.51** |
 | tashkeel-nano-1p1m (`single`, NFC) | 5.87 | 12.44 | 18.63 | 12.31 |
-| **tashkeel-nano-4p5m** (`nospace_centered`, shadda-first) | 14.30 | 22.59 | 31.81 | **22.90** |
+| **tashkeel-nano-4p5m** (`nospace_centered`, output normalised to NFC) | 14.30 | 22.59 | 31.81 | **22.90** |
+| tashkeel-nano-4p5m (`nospace_centered`, shadda-first as emitted) | 27.34 | 38.20 | 45.14 | 36.89 |
 | tashkeel-nano-4p5m (`single`, NFC) | 19.70 | 30.30 | 36.31 | 28.77 |
 | tashkeel-nano-4p5m (as recorded in its card, pre-NFC renderer) | 31.31 | 43.37 | 47.19 | 40.62 |
 
@@ -88,8 +89,10 @@ wrongly at some point:
    is the correct input for it.
 2. **Mark order matters.** Combining marks must be emitted in Unicode NFC order
    (fatha, ccc 30, sorts before shadda, ccc 33). A shadda-first renderer disagrees
-   with every NFC reference on every geminate. The 40.62 row above is the number
-   produced by the pre-NFC renderer and is kept only for continuity.
+   with every NFC reference on every geminate. The registered references are NFC,
+   so the 22.90 row is the 4.5 M model's own output **normalised to NFC**; the
+   package emits shadda-first, which costs 36.89 on the same three gates. The
+   other two 4.5 M rows keep the shape those figures were first published in.
 
 `scripts/score_gate.py` reproduces this table from raw corpora:
 
@@ -310,8 +313,9 @@ and gated sources are never fetched without an explicit acknowledgement.
 - **DER here is word-level**, not Sadeed's letter-level DER (CE). See above.
 - **The 4.5 M model's published card reports 40.62**, a number produced by a
   renderer that predates the NFC mark-order fix. The corrected fair-decode figure
-  is 22.90. The card has not been rewritten; this README and
-  [docs/evaluation.md](docs/evaluation.md) carry the correction.
+  under this project's registered scorer is 22.90, and the card carries a
+  correction section. Both readings were reproduced here independently; see
+  [docs/evaluation.md](docs/evaluation.md#re-running-this-table).
 - **Small models fail differently.** Both models occasionally emit a wrong case
   ending on a construct they have not seen; the `DER_nocase` column isolates
   that from genuine diacritic errors.

@@ -21,7 +21,9 @@ held-out witness: it was never trained on, so it is the honest generalisation ch
     python scripts/score_gate.py --run models/nano1p1m \
         --config training_config.yaml --decode centered --order nfc
     python scripts/score_gate.py --run models/nano4p5m \
-        --config training_config.yaml --decode nospace_centered --order shadda_first
+        --config training_config.yaml --decode nospace_centered --order nfc
+    #   ^ the 4p5m package emits shadda-first; --order nfc normalises the text
+    #     to the order the registered references use (36.89 -> 22.90).
     python scripts/score_gate.py --pred-dir out/preds          # score existing files
     python scripts/score_gate.py --pred-dir out/preds --sources fadel_test
 

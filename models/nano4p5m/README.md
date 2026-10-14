@@ -120,12 +120,18 @@ Both published models under this project's own registered scorer
 | Model | Params | fadel_test | sadeed25 | wikinews2014 | 3-gate mean |
 |---|---|---|---|---|---|
 | **tashkeel-nano-1p1m** (centered) | **1.08 M** | **5.20** | **11.71** | **17.64** | **11.51** |
-| **tashkeel-nano-4p5m (this)** (nospace+centered) | **4.49 M** | **14.30** | **22.59** | **31.81** | **22.90** |
+| **tashkeel-nano-4p5m (this)** (nospace+centered, normalised to NFC) | **4.49 M** | **14.30** | **22.59** | **31.81** | **22.90** |
 
 This metric is **word-level** (a word counts as correct only if all its marks
 match) and is therefore not comparable to the benchmark's diacritic-level
 `DER (CE)` column above. It is reported only so the two published models can
 be compared to each other under one fixed convention.
+
+The registered references are NFC, so this model's row normalises its emitted
+shadda-first text to NFC first. Left exactly as emitted it scores
+**27.34 / 38.20 / 45.14 (mean 36.89)** on the same three gates; that is the same
+weights, decode arm, window and stride, and it is the penalty this model's
+legacy mark order carries against NFC references.
 
 ### Correction: earlier numbers in this card were inflated
 
@@ -135,7 +141,8 @@ produced by a decoder that predates the NFC mark-order fix and were then
 compared against references rendered in the old order, so they carried the
 full geminate-order penalty. The corrected value for the same checkpoint and
 the same decoder arm is **19.70 / 30.30 / 36.31 (mean 28.77)**; with the
-whitespace-matched decode used above it is **14.30 / 22.59 / 31.81 (22.90)**.
+whitespace-matched decode used above it is **14.30 / 22.59 / 31.81 (mean 22.90)**
+once the emitted text is normalised to NFC.
 
 ### The whitespace mismatch (this model only)
 
@@ -340,7 +347,9 @@ echo 'مرحبا بالعالم' | python diacritize.py
 - Input is diacritized or bare Arabic; marks are stripped internally and
   re-predicted. Non-Arabic text passes through byte-exact.
 - **Raw text is not this model's best input** - see the whitespace note above.
-- Output uses the legacy shadda-first mark order, not NFC.
+- Output uses the legacy shadda-first mark order, not NFC. Normalise it
+  (`unicodedata.normalize("NFC", text)`) before comparing against NFC
+  references: on the registered gates that is worth 36.89 -> 22.90.
 
 ---
 
@@ -382,10 +391,10 @@ gate scorer, and both demos (Gradio and browser-only). The datasets themselves
 are not redistributed: `scripts/download_data.py` fetches them.
 
 The registered tracker can be re-scored from the shipped weights with
-`python scripts/score_gate.py --run models/nano4p5m --config training_config.yaml --decode nospace_centered --order shadda_first`
-(the fair arm for this checkpoint; `docs/evaluation.md` explains why the
-whitespace-stripped arm is the honest one for a model trained on a
-zero-space bed).
+`python scripts/score_gate.py --run models/nano4p5m --config training_config.yaml --decode nospace_centered --order nfc`
+(the fair arm for this checkpoint: whitespace-stripped input because the bed it
+was trained on has no space tokens, and `--order nfc` because the registered
+references are NFC; `docs/evaluation.md` re-runs both readings).
 
 ---
 

@@ -79,14 +79,18 @@ Registered gate (percent, lower is better):
 |---|---|---|---|---|---|
 | tashkeel-nano-1p1m | `centered`, NFC | 5.20 | 11.71 | 17.64 | **11.51** |
 | tashkeel-nano-1p1m | `single`, NFC | 5.87 | 12.44 | 18.63 | 12.31 |
-| tashkeel-nano-4p5m | `nospace_centered`, shadda-first | 14.30 | 22.59 | 31.81 | **22.90** |
+| tashkeel-nano-4p5m | `nospace_centered`, output normalised to NFC | 14.30 | 22.59 | 31.81 | **22.90** |
+| tashkeel-nano-4p5m | `nospace_centered`, shadda-first as emitted | 27.34 | 38.20 | 45.14 | 36.89 |
 | tashkeel-nano-4p5m | `single`, NFC | 19.70 | 30.30 | 36.31 | 28.77 |
 | tashkeel-nano-4p5m | as recorded in its card (pre-NFC renderer) | 31.31 | 43.37 | 47.19 | 40.62 |
 
-The 4.5 M model's published card reports 40.62. That figure came from a renderer
-that predates the NFC fix and penalises the model for a defect rather than for
-its quality. The corrected fair-decode figure is 22.90. The card has not been
-rewritten; this document and the [README](../README.md) carry the correction.
+The 4.5 M model's published card reports 40.62 in its headline table. That
+figure came from a renderer that predates the NFC fix and penalises the model
+for a defect rather than for its quality. The card carries a correction section,
+and the fair-decode figure is 22.90. Two of its rows above quote the 4.5 M model
+with its output normalised to NFC, because the registered references are NFC;
+the package itself emits shadda-first, and that literal rendering is the 36.89
+row. Both readings are the same weights, decode arm, window and stride.
 
 ### Re-running this table
 
@@ -107,6 +111,22 @@ member of a near-tie vowel pair. Same weights, same decode rule, same window and
 stride; the residual is argmax tie-flip between the original batch decode and the
 single-sequence decode used here, worth 0.011 percentage points on the mean.
 Quote 11.5 %; the third decimal is not stable.
+
+The 4.5 M row reproduces too. Measured 2026-10-14 on the CPU, `--decode
+nospace_centered`, scoring the predictions twice - once as emitted and once
+after `unicodedata.normalize("NFC", ...)`:
+
+| gate | as emitted (shadda-first) | normalised to NFC | table (NFC) |
+|---|---|---|---|
+| fadel_test | 0.273410 | 0.142968 | 0.1430 |
+| sadeed25 | 0.381979 | 0.225967 | 0.2259 |
+| wikinews2014 | 0.451384 | 0.318058 | 0.3181 |
+| **registered mean** | 0.368924 | **0.228997** | 0.228984 |
+
+0.0013 percentage points below the recorded mean, from one mark on one sadeed25
+line - the same tie-flip as above. The as-emitted column is what the published
+package actually produces, and it is why the fair rows have to say which mark
+order they were scored in.
 
 Held-out witness, `abdou_test`:
 
@@ -130,9 +150,11 @@ Per-gate detail for the 4.5 M published checkpoint (step 19,500):
         --config training_config.yaml --decode centered --order nfc \
         --out-json out/gate_1p1m.json
 
-    # the 4.5 M model under its fair arm
+    # the 4.5 M model under its fair arm: --order nfc normalises the emitted
+    # shadda-first text to the order the registered references use. Omitting it
+    # keeps the package default and scores 36.89 against those same references.
     python scripts/score_gate.py --run models/nano4p5m \
-        --config training_config.yaml --decode nospace_centered --order shadda_first
+        --config training_config.yaml --decode nospace_centered --order nfc
 
     # score prediction files that already exist
     python scripts/score_gate.py --pred-dir out/gate

@@ -109,3 +109,26 @@ def test_confusion_matrix_is_15_class():
     assert len(summary["confusion"]) == 15
     assert len(summary["per_class"]) == 15
     assert summary["position_accuracy"] == pytest.approx(1.0)
+
+def test_registered_score_separates_the_two_mark_orders_on_a_corpus():
+    """The registered metric is order-sensitive.
+
+    The published 4.5M package emits shadda-first while the registered
+    references are NFC, and the whole gap between 36.89 and 22.90 is that mark
+    order. This pins the mechanism at corpus level so the fair rows in
+    docs/evaluation.md cannot lose their order label again.
+    """
+    import unicodedata
+
+    nfc = "\u0628\u064e\u0651\u0645 " + W3        # ba + fatha + shadda, NFC
+    emitted = "\u0628\u0651\u064e\u0645 " + W3    # same word, shadda first
+    # W3 is bare, so it is unaffected by the normalisation and only the
+    # geminate word can move the rate.
+    assert unicodedata.normalize("NFC", emitted) == nfc
+
+    as_emitted = EM.summarize(EM.score_corpus([emitted], [nfc]))["der_registered"]
+    normalised = EM.summarize(
+        EM.score_corpus([unicodedata.normalize("NFC", emitted)], [nfc])
+    )["der_registered"]
+    assert normalised == 0.0
+    assert as_emitted == pytest.approx(0.5)   # the geminate word only
