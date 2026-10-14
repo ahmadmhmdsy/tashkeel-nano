@@ -28,6 +28,13 @@ The four values the scorer reports per file are DER, WER, `DER_nocase` (case
 endings dropped on both sides) and `text_preservation` (the share of words whose
 base letters are unchanged — a hard gate, ~1.0 by construction in this pipeline).
 
+`DER` and `WER` are distinct quantities: `DER` compares only the **mark string** and
+accepts *any* reference for the line, while `WER` requires the whole word to equal the
+**primary** reference exactly. They coincide on the registered gates because
+`text_preservation` is 1.0000 there, so base letters never drift; they separate where
+it is not, as on the witness gate (39.30 against 39.65). That is why the per-gate table
+below prints two identical columns.
+
 Aggregation is **word-weighted**: each line's rate is multiplied by that line's
 word count before summing, so the result is a corpus-level rate and not a mean of
 per-line fractions.
@@ -151,16 +158,19 @@ Per-gate detail for the 4.5 M published checkpoint (step 19,500):
 
 ## Running the evaluation
 
-    # predict and score the registered gate in one command
+    # predict and score the registered gate in one command. --out is where the
+    # <source>.pred.txt / <source>.ref.txt pairs land and what --pred-dir reads
+    # back below; --out-json only writes the summary.
     python scripts/score_gate.py --run models/nano1p1m \
         --config training_config.yaml --decode centered --order nfc \
-        --out-json out/gate_1p1m.json
+        --out out/gate --out-json out/gate_1p1m.json
 
     # the 4.5 M model under its fair arm: --order nfc normalises the emitted
     # shadda-first text to the order the registered references use. Omitting it
     # keeps the package default and scores 36.89 against those same references.
     python scripts/score_gate.py --run models/nano4p5m \
-        --config training_config.yaml --decode nospace_centered --order nfc
+        --config training_config.yaml --decode nospace_centered --order nfc \
+        --out out/gate_4p5m
 
     # score prediction files that already exist
     python scripts/score_gate.py --pred-dir out/gate

@@ -20,5 +20,5 @@ superset would require a real license audit of every upstream source.
 You may use, study, and modify this model for research purposes. If you use
 it in a project, cite the model and the upstream datasets.
 
-Model weights: (c) 2026 the nano_slms authors. Architecture: bidirectional
+Model weights: (c) 2026 the tashkeel-nano authors. Architecture: bidirectional
 char-level Transformer encoder + 15-class diacritic head.

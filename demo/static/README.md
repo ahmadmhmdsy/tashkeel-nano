@@ -30,7 +30,7 @@ into a search box.
 
 A model card can claim a small model is competitive. A Space lets anyone check
 it in about ten seconds, on their own text. The point is the size/quality trade:
-**1.08 M parameters** against models tens to hundreds of times larger.
+**1.08 M parameters** against published models from 12.5 M to 13 B.
 
 ## How it runs
 
@@ -125,4 +125,8 @@ python -m http.server 7863
 
 ## License
 
-Apache-2.0 for this Space's code. Each model keeps its own license.
+Apache-2.0 for this Space's code. Each model keeps its own license: the two
+`ahmadsy/tashkeel-nano-*` checkpoints are research-use-only, and the ONNX graphs
+under `models/` are redistributions of those weights, so they remain under that
+license rather than Apache-2.0. Full text:
+[LICENSE-MODELS](https://github.com/ahmadmhmdsy/tashkeel-nano/blob/main/LICENSE-MODELS).

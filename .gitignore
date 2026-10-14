@@ -1,8 +1,13 @@
 # ---- fetched corpora and derived training beds (never committed) ----
-data/
-runs/
-out/
-scratch/
+# Anchored to the repository root: a bare "data/" would also match
+# demo/static/data/, which holds the browser demo's shipped payload.
+/data/
+/runs/
+/out/
+/scratch/
+
+# ---- local audit reports (analysis notes, not part of the project) ----
+README_AUDIT.md
 
 # ---- local-only model staging: step probes are rebuildable with scripts/soup.py ----
 models/*/weights/

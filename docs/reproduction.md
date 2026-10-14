@@ -8,15 +8,20 @@ differs, stop there: a later number will not be comparable.
     git clone https://github.com/ahmadmhmdsy/tashkeel-nano
     cd tashkeel-nano
     python -m venv .venv
-    .venv/bin/python -m pip install -r requirements.txt
+    .venv/bin/python -m pip install -r requirements.txt   # Windows: .venv\Scripts\python
 
-No install step is required for the scripts; each one puts `src/` on
-`sys.path` itself.
+No install step is required for the scripts; the ones that import the package
+put `src/` on `sys.path` themselves.
 
 ## 1. Raw corpora
 
     export HF_TOKEN=hf_...          # PowerShell: $env:HF_TOKEN="hf_..."
     python scripts/download_data.py --accept-license
+
+Both code blocks in this document are POSIX shell. `VAR=1 cmd` and a trailing `\` are
+not PowerShell: on Windows set `$env:HF_TOKEN="hf_..."` and `$env:PREP_KEEP_ALL="1"`
+first, put each command on one line, and use `.venv\Scripts\python`. Git Bash or WSL
+runs the blocks unchanged.
 
 Expect `data/raw` to hold `fadel/`, `wikinews/`, `sadeed_25/`,
 `sadeed_tashkeela/` and `abdou_tashkeel/`, and
@@ -82,10 +87,11 @@ The run itself is 12,000 steps at ctx 512, batch 8, accumulation 4.
 
     python scripts/train.py --config configs/nano4p5m.yaml
 
-20,000 steps on `v3`, warm-started from `runs/stage1lm/final/model.pt`. The
-published artifact is **step 19,500**, selected by best validation loss
-(0.175752287773707), not the final step. `runs/e63s_s4_12l160/final/model.pt`
-holds it.
+20,000 steps on `v3`, warm-started from `runs/stage1lm/final/model.pt`, in about
+2.2 h on the recorded hardware. The published artifact is **step 19,500**, selected
+by best validation loss (0.175752287773707), and that state dict is what
+`models/nano4p5m/` ships. The run's own `runs/e63s_s4_12l160/final/model.pt` is
+step 20,000 and is **not** the published checkpoint.
 
 ## 6. The 1.1 M model
 
@@ -123,7 +129,8 @@ This is the step that produces the released weights. Twelve probes
 (32,500, 35,000, … 60,000) are averaged elementwise in fp32 and cast back to the
 members' dtype. `soup.json` records every member path, its sha256, and the
 relative L2 distance from the soup to each member — the basin check. The command
-is CPU-only and takes a couple of minutes.
+is CPU-only and takes a couple of minutes. The training run behind it (`e98_soupB`)
+ran 60,000 steps in about 9.0 h on the recorded hardware.
 
 The published `model.safetensors` for 1p1m is this soup, not
 `runs/e98_soupB/final/model.pt`. Those two files are **different**; using the
@@ -137,11 +144,24 @@ final step instead of the soup loses the whole gain.
         --config training_config.yaml --decode centered --order nfc
 
     python scripts/score_gate.py --run models/nano4p5m \
-        --config training_config.yaml --decode nospace_centered --order shadda_first
+        --config training_config.yaml --decode nospace_centered --order nfc
 
 The first should report the registered mean of **11.51** and the second **22.90**
 (percent). Both write their predictions next to their references so the number
 can be traced.
+
+## 9. The browser ONNX graphs (optional)
+
+    python -m pip install -e ".[onnx]"
+    python scripts/export_onnx.py --run models/nano1p1m \
+        --out demo/static/models/nano1p1m.onnx --verify
+    python scripts/export_onnx.py --run models/nano4p5m \
+        --out demo/static/models/nano4p5m.onnx --verify
+
+`--verify` runs the exported file through `onnxruntime` and compares it with the torch
+module on random ids. On the committed graphs the two agree to within 2e-5, and the
+4.5 M export is bit-identical to the shipped file. opset 17 has no
+`RMSNormalization`, so each RMSNorm is traced as arithmetic.
 
 ## Parity checks that are cheap and worth doing first
 

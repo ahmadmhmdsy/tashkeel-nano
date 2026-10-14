@@ -83,13 +83,15 @@ catalog:
     title: Sadeed Tashkeela (input/output pairs, Tashkeela-derived)
     homepage: https://huggingface.co/datasets/Misraj/Sadeed_Tashkeela
     license: "GPL-2.0-derived (Tashkeela); copyleft"
-    commercial_use: "no - GPL-2.0 copyleft applies to derived work"
+    commercial_use: "no - GPL-2.0-derived (Tashkeela); treat the corpus as copyleft"
     requires_acceptance: true
     allow_patterns: ["data/*.parquet"]
     note: >
-      The largest training source in the D-line corpus. GPL-2.0-derived: the
-      models trained on it are distributed under the same terms by this project.
-      Set --accept-license to fetch it.
+      The largest training source in the D-line corpus. GPL-2.0-derived
+      (Tashkeela); treat the corpus itself as copyleft. This field describes the
+      SOURCE, not the weights: the terms of the published model weights are
+      stated separately in LICENSE-MODELS, which governs them. Set
+      --accept-license to fetch it.
 
   abdou_tashkeel:
     kind: hf

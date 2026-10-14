@@ -31,6 +31,7 @@ dependencies = [
 hub = ["huggingface_hub>=0.23", "safetensors>=0.4"]
 data = ["pandas>=2.0", "pyarrow>=14.0", "huggingface_hub>=0.23"]
 demo = ["gradio>=4.44"]
+onnx = ["onnx>=1.15", "onnxruntime>=1.17"]
 dev = ["pytest>=7.4", "huggingface_hub>=0.23"]
 
 [project.urls]
