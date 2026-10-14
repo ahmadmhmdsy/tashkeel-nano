@@ -14,8 +14,8 @@ and two runnable demos (a Gradio app and a browser-only ONNX page).
 | body | 18L · 64 hidden · 256 FFN · 8 heads / 2 KV · ctx 256 | 12L · 160 hidden · 640 FFN · 8 heads / 2 KV · ctx 128 |
 | training bed | `v3full` (ctx 256, real space tokens) | `v3` (ctx 128, spaces stripped) |
 | published artifact | uniform soup of 12 step probes (32,500 → 60,000) | step 19,500 (best val loss) |
-| registered 3-gate DER | **11.51 %** | **22.90 %** (fair decode — see below) |
-| decode | `centered` 256/128, NFC output | `nospace_centered`, shadda-first output |
+| registered 3-gate DER | **11.51 %** | **22.90 %** (fair decode, output normalised to NFC — see below) |
+| decode | `centered` 256/128, NFC output | `nospace_centered`; the package emits shadda-first |
 
 Live demo: **https://huggingface.co/spaces/ahmadsy/tashkeel-compare**
 
