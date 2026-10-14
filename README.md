@@ -274,7 +274,8 @@ Hugging Face Space; `demo/gradio/` is the fuller comparison app.
     src/tashkeel_nano/  the package: model, tokenizer, labels, passthrough,
                         inference, metrics, pipeline helpers
     scripts/            the curated CLIs (download, prepare, tokenize, train,
-                        infer, soup, score, eval, report, selftest)
+                        infer, soup, score, normalize-marks, eval, report,
+                        selftest)
     experiments/        every experiment script behind the results, plus
                         verdict_audit/ with the analysis tools
     models/nano1p1m/    the published 1p1m package (weights + card + code copy)

@@ -112,9 +112,15 @@ stride; the residual is argmax tie-flip between the original batch decode and th
 single-sequence decode used here, worth 0.011 percentage points on the mean.
 Quote 11.5 %; the third decimal is not stable.
 
-The 4.5 M row reproduces too. Measured 2026-10-14 on the CPU, `--decode
-nospace_centered`, scoring the predictions twice - once as emitted and once
-after `unicodedata.normalize("NFC", ...)`:
+The 4.5 M row reproduces too. Measured 2026-10-14 on the CPU, predicting once
+and scoring the same predictions twice:
+
+    python scripts/score_gate.py --run models/nano4p5m \
+        --config training_config.yaml --decode nospace_centered \
+        --out runs/gate/nano4p5m                  # as emitted: shadda-first
+    python scripts/normalize_marks.py --dir runs/gate/nano4p5m
+    python scripts/score_gate.py --pred-dir runs/gate/nano4p5m \
+        --sources fadel_test,sadeed25,wikinews2014,wikinews2024
 
 | gate | as emitted (shadda-first) | normalised to NFC | table (NFC) |
 |---|---|---|---|

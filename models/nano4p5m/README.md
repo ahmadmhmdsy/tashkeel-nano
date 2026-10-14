@@ -348,8 +348,10 @@ echo 'مرحبا بالعالم' | python diacritize.py
   re-predicted. Non-Arabic text passes through byte-exact.
 - **Raw text is not this model's best input** - see the whitespace note above.
 - Output uses the legacy shadda-first mark order, not NFC. Normalise it
-  (`unicodedata.normalize("NFC", text)`) before comparing against NFC
-  references: on the registered gates that is worth 36.89 -> 22.90.
+  (`unicodedata.normalize("NFC", text)`, or
+  `scripts/normalize_marks.py --dir <pred-dir>` for a whole directory) before
+  comparing against NFC references: on the registered gates that is worth
+  36.89 -> 22.90.
 
 ---
 
