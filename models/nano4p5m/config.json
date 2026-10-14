@@ -1,0 +1,48 @@
+{
+  "model_type": "tashkeel_nano",
+  "architectures": [
+    "DiacritizerModel"
+  ],
+  "vocab_size": 171,
+  "hidden_size": 160,
+  "num_hidden_layers": 12,
+  "num_attention_heads": 8,
+  "num_key_value_heads": 2,
+  "intermediate_size": 640,
+  "max_position_embeddings": 128,
+  "num_classes": 15,
+  "causal": false,
+  "kv_pattern": "new",
+  "shared_layers": 0,
+  "dropout": 0,
+  "rms_norm_eps": 0.000001,
+  "head_bias": false,
+  "head_dim": 20,
+  "tie_word_embeddings": false,
+  "training": {
+    "phase": "e63s_s4_12l160",
+    "tokens_phase": "v3",
+    "pretrained_init": "runs/diac/stage1lm/final/model.pt",
+    "lr": 0.0002,
+    "weight_decay": 0.1,
+    "batch_size": 32,
+    "accum": 1,
+    "total_steps": 20000,
+    "save_every": 500,
+    "eval_every": 500,
+    "gate_eval_every": 500,
+    "early_stop_patience": 24,
+    "loss": "cross_entropy_vanilla",
+    "label_smoothing": 0,
+    "optimizer": "adamw",
+    "precision": "fp16_autocast",
+    "seed": 777
+  },
+  "published_checkpoint": {
+    "step": 19500,
+    "selection": "best_val_loss",
+    "best_val_loss": 0.175752287773707,
+    "best_val_acc": 0.9419,
+    "source": "runs/diac/e63s_s4_12l160/final/model.pt"
+  }
+}

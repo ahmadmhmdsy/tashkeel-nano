@@ -1,0 +1,10 @@
+{
+  "phase": "e98_soupB",
+  "done_steps": 60000,
+  "reason": "completed",
+  "best_val_loss": 0.06710457572089434,
+  "best_step": 60000,
+  "diverged": false,
+  "elapsed_s": 32437.9,
+  "total_steps_planned": 60000
+}

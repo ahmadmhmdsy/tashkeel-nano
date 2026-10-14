@@ -1,0 +1,25 @@
+# Lineage step 2 of 4 for nano1p1m: first diacritization fine-tune.
+# Long schedule (200k steps) on the v3 token phase; the run that was actually
+# carried forward is the gate-probe snapshot named by e69's pretrained_init.
+accum: 1
+batch_size: 128
+early_stop_patience: 12
+eval_every: 5000
+gate_eval_every: 5000
+gate_probe_batch: 256
+log_every: 100
+lr: 0.0002
+model:
+  ctx: 128
+  ffn: 256
+  hidden: 64
+  layers: 18
+  n_heads: 8
+  n_kv: 2
+optimizer: adamw
+phase: e67_c1_ft64_fullv3
+pretrained_init: runs/e67_p1_lm64/final/model.pt
+save_every: 100
+tokens_phase: v3
+total_steps: 200000
+weight_decay: 0.1

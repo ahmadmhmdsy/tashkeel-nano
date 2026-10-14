@@ -1,0 +1,24 @@
+Research-Use License (mixed upstream — not for commercial use)
+
+This model (tashkeel-nano-4p5m) is provided for RESEARCH USE ONLY.
+
+The training data is a mix of web-scraped and paper-bundled corpora with
+heterogeneous upstream licenses:
+
+- abdou_tashkeel — compilation card claims MIT, but ~45% of its content is
+  Tashkeela (commonly GPL-2 mirrored) plus shamela pages and
+  GPT-4o-mini-diacritized Wikipedia.
+- fadel — derives from Tashkeela.
+- sadeed_tashkeela — Tashkeela-derived (GPL-2 noted), via
+  HuggingFace Misraj/Sadeed_Tashkeela.
+- qcri (WikiNews / Wikipedia diacritized) — paper-bundled shared data,
+  citation expected.
+
+Accordingly this model is NOT licensed for commercial use. A commercial
+superset would require a real license audit of every upstream source.
+
+You may use, study, and modify this model for research purposes. If you use
+it in a project, cite the model and the upstream datasets.
+
+Model weights: (c) 2026 the nano_slms authors. Architecture: bidirectional
+char-level Transformer encoder + 15-class diacritic head.

@@ -1,0 +1,22 @@
+# Lineage step 1 of 4 for nano1p1m: a small CAUSAL LM at ctx 128.
+# Warm start for the first diacritization fine-tune. Same 18L/64h/256ffn body
+# as the final model, so the weights transfer without reshaping.
+accum: 1
+batch_size: 32
+causal: true
+early_stop_patience: 12
+eval_bs: 128
+eval_every: 1000
+lr: 0.0002
+model:
+  ctx: 128
+  ffn: 256
+  hidden: 64
+  layers: 18
+  n_heads: 8
+  n_kv: 2
+phase: e67_p1_lm64
+save_every: 1000
+tokens_dir: v3s10
+total_steps: 20000
+weight_decay: 0.1

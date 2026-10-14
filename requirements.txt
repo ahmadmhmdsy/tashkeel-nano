@@ -1,0 +1,14 @@
+# Core runtime (inference + evaluation). Stdlib-only tokenizer/labels/passthrough
+# mean the metric path needs nothing beyond PyYAML.
+torch>=2.0
+numpy>=1.24
+PyYAML>=6.0
+
+# Optional: downloading the published models from the Hugging Face Hub.
+huggingface_hub>=0.23
+safetensors>=0.4
+
+# Optional: the data pipeline (parquet corpora) and the Gradio demo.
+pandas>=2.0
+pyarrow>=14.0
+gradio>=4.44

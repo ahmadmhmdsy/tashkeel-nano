@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tashkeel Compare - Arabic diacritization in your browser</title>
+<meta name="description" content="Compare a 1.08M-parameter Arabic diacritizer against larger systems. Everything runs on your device; no server.">
+<!--
+  Language is resolved before the stylesheet paints. Without this the page would
+  paint in English and then flip to Arabic a moment later, which is worse than
+  either language. The logic is deliberately the same as detectLang() in
+  js/i18n.js; keep the two in step.
+-->
+<script>
+(function () {
+  try {
+    var saved = window.localStorage.getItem("tashkeel.lang");
+    var nav = (navigator.languages && navigator.languages[0]) || navigator.language || "";
+    var lang = (saved === "ar" || saved === "en") ? saved : (/^ar\b/i.test(nav) ? "ar" : "en");
+    document.documentElement.setAttribute("lang", lang);
+    document.documentElement.setAttribute("dir", lang === "ar" ? "rtl" : "ltr");
+  } catch (e) { /* private mode: English is a safe default */ }
+})();
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700;9..144,900&family=IBM+Plex+Sans:wght@400;500;600&family=Noto+Sans+Arabic:wght@400;500;600;700&family=Amiri:wght@400;700&display=swap">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="masthead">
+  <div class="mast-copy">
+    <p class="eyebrow" data-i18n="eyebrow">Arabic diacritization &middot; runs entirely on your device</p>
+    <h1 data-i18n-html="h1">Tashkeel <em>Compare</em></h1>
+    <p class="lede" data-i18n="lede">A 1.08 million parameter model vocalizes Arabic with no server and no GPU.
+      Put it beside far larger systems, paste a whole document, and judge the marks yourself.</p>
+  </div>
+  <div class="mast-side">
+    <div class="lang-switch" role="group" id="lang-switch" data-i18n-aria="lang.label" aria-label="Language">
+      <button type="button" data-lang="en">English</button>
+      <button type="button" data-lang="ar">&#1575;&#1604;&#1593;&#1585;&#1576;&#1610;&#1577;</button>
+    </div>
+    <dl class="mast-facts">
+      <div><dt data-i18n="fact.smallest">Our smallest</dt><dd data-i18n="fact.smallest.v">1.08 M</dd></div>
+      <div><dt data-i18n="fact.runs">Runs on</dt><dd data-i18n="fact.runs.v">Your CPU</dd></div>
+      <div><dt data-i18n="fact.network">Network</dt><dd data-i18n="fact.network.v">None</dd></div>
+    </dl>
+  </div>
+</header>
+
+<nav class="tabs" role="tablist" data-i18n-aria="nav.sections" aria-label="Sections">
+  <button role="tab" id="tab-compare" aria-controls="panel-compare" aria-selected="true" data-i18n="tab.compare">Compare</button>
+  <button role="tab" id="tab-bulk" aria-controls="panel-bulk" aria-selected="false" data-i18n="tab.bulk">Bulk text</button>
+  <button role="tab" id="tab-score" aria-controls="panel-score" aria-selected="false" data-i18n="tab.score">Score a reference</button>
+  <button role="tab" id="tab-board" aria-controls="panel-board" aria-selected="false" data-i18n="tab.board">Leaderboard</button>
+</nav>
+
+<main>
+
+<!-- ------------------------------------------------------------ compare -->
+<section id="panel-compare" role="tabpanel" aria-labelledby="tab-compare" class="panel">
+  <div class="work">
+    <label class="field">
+      <span class="field-label" data-i18n="cmp.input">Arabic text to vocalize</span>
+      <textarea id="cmp-input" dir="rtl" rows="4" spellcheck="false"
+        data-i18n-ph="cmp.placeholder" placeholder="&#1575;&#1604;&#1587;&#1604;&#1575;&#1605; &#1593;&#1604;&#1610;&#1603;&#1605;"></textarea>
+    </label>
+    <div class="samples" id="cmp-samples" role="group" data-i18n-aria="cmp.samples" aria-label="Sample texts"></div>
+    <div class="controls">
+      <div class="model-picker" id="cmp-models" role="group" data-i18n-aria="cmp.models" aria-label="Models"></div>
+      <button class="go" id="cmp-run" data-i18n="cmp.run">Vocalize</button>
+    </div>
+    <p class="hint" id="cmp-status"></p>
+  </div>
+  <div id="cmp-results" class="results" aria-live="polite"></div>
+</section>
+
+<!-- --------------------------------------------------------------- bulk -->
+<section id="panel-bulk" role="tabpanel" aria-labelledby="tab-bulk" class="panel" hidden>
+  <div class="work">
+    <div class="row">
+      <label class="field grow">
+        <span class="field-label" data-i18n="bulk.input">Paste a document, or upload a file</span>
+        <textarea id="bulk-input" dir="rtl" rows="9" spellcheck="false"></textarea>
+      </label>
+    </div>
+    <div class="controls wrap">
+      <label class="field tight">
+        <span class="field-label" data-i18n="bulk.upload">Upload .txt</span>
+        <input type="file" id="bulk-file" accept=".txt,text/plain">
+      </label>
+      <label class="field tight">
+        <span class="field-label"><span id="bulk-budget-label" data-i18n="bulk.budgetLabel">Chunk budget</span> <output id="bulk-budget-out">400</output> <span id="bulk-budget-unit" data-i18n="bulk.budgetUnit">chars</span></span>
+        <input type="range" id="bulk-budget" min="60" max="2000" step="20" value="400">
+      </label>
+      <div class="model-picker" id="bulk-models" role="group" data-i18n-aria="bulk.models" aria-label="Models"></div>
+      <button class="go" id="bulk-run" data-i18n="bulk.run">Split &amp; vocalize</button>
+    </div>
+    <div id="bulk-report" class="report"></div>
+    <div class="controls">
+      <button class="ghost" id="bulk-download" disabled data-i18n="bulk.download">Download result</button>
+      <button class="ghost" id="bulk-copy" disabled data-i18n="bulk.copy">Copy result</button>
+    </div>
+  </div>
+  <div id="bulk-results" class="results" aria-live="polite"></div>
+</section>
+
+<!-- -------------------------------------------------------------- score -->
+<section id="panel-score" role="tabpanel" aria-labelledby="tab-score" class="panel" hidden>
+  <div class="work">
+    <label class="field">
+      <span class="field-label" data-i18n="score.ref">Reference text (fully vocalized gold)</span>
+      <textarea id="score-ref" dir="rtl" rows="4" spellcheck="false"></textarea>
+    </label>
+    <div class="controls">
+      <label class="switch">
+        <input type="checkbox" id="score-canon" checked>
+        <span><span data-i18n="score.canon">Ignore mark order</span> <small data-i18n="score.canonHint">(compares readings, not spelling conventions)</small></span>
+      </label>
+      <button class="go" id="score-run" data-i18n="score.run">Score</button>
+    </div>
+    <p class="hint" data-i18n="score.blurb">Marks are stripped from the reference, every model re-vocalizes the bare text,
+      and each output is scored against the original.</p>
+  </div>
+  <div id="score-results" class="results" aria-live="polite"></div>
+</section>
+
+<!-- ---------------------------------------------------------- leaderboard -->
+<section id="panel-board" role="tabpanel" aria-labelledby="tab-board" class="panel" hidden>
+  <div id="board-body"></div>
+</section>
+
+</main>
+
+<footer class="colophon">
+  <h2 data-i18n="col.h2">What this page does and does not claim</h2>
+  <ul>
+    <li data-i18n-html="col.1"><strong>Our two models run live</strong> in your browser through ONNX Runtime Web.
+      Their output is byte-identical to the published Python packages; that equivalence is tested.</li>
+    <li data-i18n-html="col.2"><strong>Mishkala and FLAN-T5 outputs on the built-in samples are precomputed.</strong>
+      They cannot run on a static page, and they are labelled as such wherever they appear.</li>
+    <li data-i18n-html="col.3"><strong>Leaderboard numbers are quoted</strong> from the published SadeedDiac-25 table,
+      produced by that benchmark&rsquo;s own letter-level evaluator. They are never mixed with ours.</li>
+    <li data-i18n-html="col.4"><strong>Every number says which evaluator produced it.</strong>
+      The Board&rsquo;s <em>measured here</em> rows come from the benchmark&rsquo;s own letter-level evaluator,
+      scored on all 1200 rows. The Score tab runs a different, self-contained scorer inside this page
+      &mdash; letter-level DER over marked letters, word-level WER &mdash; and says so on the tab.
+      Nothing is placed in a column it does not belong to.</li>
+  </ul>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/onnxruntime-web@1.30.0/dist/ort.min.js"></script>
+<script type="module" src="js/app.js"></script>
+</body>
+</html>

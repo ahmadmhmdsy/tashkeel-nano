@@ -1,0 +1,34 @@
+# ---- fetched corpora and derived training beds (never committed) ----
+data/
+runs/
+out/
+scratch/
+
+# ---- local-only model staging: step probes are rebuildable with scripts/soup.py ----
+models/*/weights/
+models/*/soup_members/
+models/*/checkpoint-*/
+models/*/gate_probe/
+
+# ---- python ----
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+.venv/
+venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# ---- secrets ----
+.env
+.env.*
+
+# ---- logs and editor/OS noise ----
+*.log
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

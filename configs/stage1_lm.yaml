@@ -1,0 +1,32 @@
+# Stage 1 - the causal LM warm start that both published models descend from.
+#
+# It is a CAUSAL next-character model (causal: true) trained on the raw-text
+# token stream, not on diacritic labels. Its weights are then re-used as the
+# encoder initialisation of every diacritization run.
+#
+#   python scripts/prep_rawlm.py                        # builds data/stage1
+#   python scripts/train_lm.py --config configs/stage1_lm.yaml
+#
+# Lineage: stage1lm -> e63s_s4_12l160 (nano4p5m)
+#          stage1lm -> e67_p1_lm64 -> e67_c1_ft64_fullv3 -> e69_c4_ctx256
+#                   -> e98_soupB (nano1p1m)
+accum: 4
+batch_size: 8
+causal: true
+early_stop_patience: 12
+eval_bs: 32
+eval_every: 250
+lr: 0.0002
+model:
+  ctx: 512
+  ffn: 1088
+  hidden: 272
+  layers: 28
+  n_heads: 8
+  n_kv: 2
+phase: stage1lm
+save_every: 500
+tokens_dir: stage1
+total_steps: 12000
+vram_cap_gib: 5.8
+weight_decay: 0.1

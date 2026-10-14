@@ -1,0 +1,11 @@
+# Plain-file distribution. The published artifacts are small (4.15 MiB and
+# 17.2 MiB) and must be clone-able WITHOUT git-lfs, so no LFS filter is declared
+# here. The Hub-side .gitattributes is preserved beside this file as
+# .gitattributes.hf-original for provenance only.
+*.pt binary
+*.safetensors binary
+*.onnx binary
+*.json text eol=lf
+*.py text eol=lf
+*.md text eol=lf
+*.yaml text eol=lf

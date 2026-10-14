@@ -1,0 +1,48 @@
+# tashkeel-nano-1p1m - the exact configuration that produced the published
+# ahmadsy/tashkeel-nano-1p1m checkpoint (internal id e98_soupB).
+#
+# 18L / 64 hidden / 256 ffn / 8 heads / 2 kv, bidirectional, ctx 256.
+# 60,000 steps on the v3full token phase, warm-started from e69_c4_ctx256.
+# The PUBLISHED weights are a uniform soup of 12 step probes (32500..60000),
+# not the final step: see scripts/soup.py and configs/lineage/.
+#
+# Reproduce (docs/reproduction.md is the authoritative walkthrough):
+#   python scripts/download_data.py --accept-license
+#   PREP_KEEP_ALL=1 python scripts/prepare_data.py --out-dir data/prepared_rebuilt
+#   python experiments/e97_build_bed.py --prepared-dir data/prepared_rebuilt \
+#          --out-dir data/v3full/tokens --ctx 256 --pad-label 0
+#   python scripts/tokenize_data.py --phase v3ctx256 --ctx 256 --pad-label 0 \
+#          --prepared-dir data/prepared_rebuilt
+#   python scripts/prep_rawlm.py
+#   python scripts/train_lm.py  --config configs/stage1_lm.yaml
+#   python scripts/train_lm.py  --config configs/lineage/e67_p1_lm64.yaml
+#   python scripts/train.py     --config configs/lineage/e67_c1_ft64_fullv3.yaml
+#   python scripts/train.py     --config configs/lineage/e69_c4_ctx256.yaml
+#   python scripts/train.py     --config configs/nano1p1m.yaml
+#   python scripts/soup.py --run runs/e98_soupB --members 32500:60000:2500 \
+#          --out runs/e98_soupB/soupB_uniform
+#   python scripts/score_gate.py --run runs/e98_soupB/soupB_uniform \
+#          --decode centered --order nfc
+accum: 1
+batch_size: 64
+early_stop_patience: 99
+eval_every: 5000
+gate_eval_every: 2500
+gate_probe_batch: 256
+log_every: 100
+lr: 0.0002
+model:
+  ctx: 256
+  ffn: 256
+  hidden: 64
+  layers: 18
+  n_heads: 8
+  n_kv: 2
+optimizer: adamw
+phase: e98_soupB
+pretrained_init: runs/e69_c4_ctx256/final/model.pt
+save_every: 100
+seed: 20261012
+tokens_phase: v3full
+total_steps: 60000
+weight_decay: 0.1

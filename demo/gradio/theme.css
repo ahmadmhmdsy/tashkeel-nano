@@ -1,0 +1,43 @@
+.tk-grid { display: flex; flex-direction: column; gap: 12px; }
+
+.tk-card {
+  border: 1px solid var(--border-color-primary);
+  border-radius: 10px;
+  padding: 12px 14px;
+  background: var(--background-fill-secondary);
+}
+.tk-card.ours { border-left: 4px solid #2e7d32; }
+
+.tk-head { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 6px; }
+.tk-name { font-weight: 600; font-size: 1.02rem; }
+
+.tk-b {
+  font-size: 0.68rem; padding: 1px 7px; border-radius: 999px;
+  border: 1px solid currentColor; opacity: .85; white-space: nowrap;
+}
+.tk-b.ours { color: #2e7d32; }
+.tk-b.third { color: #6a1b9a; }
+.tk-b.slow { color: #b26a00; }
+.tk-b.order { color: #666; }
+
+.tk-stats {
+  font-size: 0.78rem; opacity: .75; margin-bottom: 8px;
+  font-variant-numeric: tabular-nums;
+}
+
+.tk-out {
+  font-size: 1.3rem; line-height: 2.2; direction: rtl; text-align: right;
+  font-family: "Amiri", "Scheherazade New", "Traditional Arabic", "Segoe UI", serif;
+}
+
+.tk-note { font-size: 0.72rem; opacity: .6; margin-top: 8px; }
+
+.tk-empty {
+  padding: 24px; text-align: center; opacity: .6;
+  border: 1px dashed var(--border-color-primary); border-radius: 10px;
+}
+
+.tk-err { color: #b00020; font-size: 0.9rem; }
+
+.tk-w { padding: 0 1px; border-radius: 3px; }
+.tk-w.bad { background: #ffcdd2; color: #7f0000; }

@@ -1,0 +1,7 @@
+gradio==6.26.0
+torch>=2.1
+transformers>=4.40
+huggingface_hub>=0.23
+pytorch-crf>=0.7.2
+sentencepiece>=0.1.99
+pandas>=2.0

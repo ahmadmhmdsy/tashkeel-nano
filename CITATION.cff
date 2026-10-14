@@ -1,0 +1,24 @@
+cff-version: 1.2.0
+message: "If you use this software or these models, please cite them as below."
+title: "tashkeel-nano: tiny Arabic diacritization models and the pipeline that trains them"
+abstract: >-
+  Character-level bidirectional Transformer encoders with a 15-class diacritic
+  head, a 1.08M-parameter model at 11.51% DER and a 4.49M-parameter model, plus
+  the full data, training, soup, and evaluation pipeline that produced them.
+type: software
+version: 1.0.0
+date-released: "2026-10-14"
+license: MIT
+repository-code: "https://github.com/ahmadmhmdsy/tashkeel-nano"
+url: "https://huggingface.co/ahmadsy/tashkeel-nano-1p1m"
+keywords:
+  - arabic
+  - diacritization
+  - tashkeel
+  - harakat
+  - transformer
+  - onnx
+authors:
+  - name: "ahmadmhmdsy"
+    alias: "ahmadsy"
+    website: "https://huggingface.co/ahmadsy"

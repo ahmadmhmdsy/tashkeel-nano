@@ -1,0 +1,31 @@
+# Normalise line endings for text, keep binaries binary. No Git LFS is used:
+# the largest committed file is a 17.8 MB ONNX graph.
+* text=auto
+
+*.py   text eol=lf
+*.md   text eol=lf
+*.txt  text eol=lf
+*.yaml text eol=lf
+*.yml  text eol=lf
+*.json text eol=lf
+*.cff  text eol=lf
+*.cfg  text eol=lf
+*.toml text eol=lf
+*.css  text eol=lf
+*.html text eol=lf
+*.js   text eol=lf
+*.sh   text eol=lf
+
+*.pt          binary
+*.pth         binary
+*.safetensors binary
+*.onnx        binary
+*.npy         binary
+*.npz         binary
+*.parquet     binary
+*.bin         binary
+*.png         binary
+*.jpg         binary
+*.ico         binary
+*.woff        binary
+*.woff2       binary

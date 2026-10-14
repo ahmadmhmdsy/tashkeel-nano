@@ -1,0 +1,69 @@
+{
+  "model_type": "tashkeel_nano",
+  "architectures": [
+    "DiacritizerModel"
+  ],
+  "vocab_size": 171,
+  "hidden_size": 64,
+  "num_hidden_layers": 18,
+  "num_attention_heads": 8,
+  "num_key_value_heads": 2,
+  "intermediate_size": 256,
+  "max_position_embeddings": 256,
+  "num_classes": 15,
+  "causal": false,
+  "kv_pattern": "new",
+  "shared_layers": 0,
+  "dropout": 0,
+  "rms_norm_eps": 0.000001,
+  "head_bias": false,
+  "head_dim": 8,
+  "tie_word_embeddings": false,
+  "decoding": {
+    "arm": "centered",
+    "window": 256,
+    "stride": 128,
+    "tie_break": "most central window wins; ties by mark codepoint order"
+  },
+  "training": {
+    "phase": "e98_soupB",
+    "tokens_phase": "v3full",
+    "pretrained_init": "runs/diac/e69_c4_ctx256/final/model.pt",
+    "lr": 0.0002,
+    "weight_decay": 0.1,
+    "batch_size": 64,
+    "accum": 1,
+    "total_steps": 60000,
+    "save_every": 100,
+    "eval_every": 5000,
+    "gate_eval_every": 2500,
+    "early_stop_patience": 99,
+    "optimizer": "adamw",
+    "precision": "fp16_autocast",
+    "seed": 20261012
+  },
+  "published_checkpoint": {
+    "kind": "uniform soup of 12 step probes",
+    "members": [
+      32500,
+      35000,
+      37500,
+      40000,
+      42500,
+      45000,
+      47500,
+      50000,
+      52500,
+      55000,
+      57500,
+      60000
+    ],
+    "recipe": "uniform mean of the 12 member state dicts, ascending step order",
+    "source": "runs/diac/e98_soupB/final/model.pt",
+    "registered_gate_mean3": {
+      "centered": 0.11514810404893018,
+      "vote": 0.11517953141866621,
+      "single": 0.12314520651442255
+    }
+  }
+}

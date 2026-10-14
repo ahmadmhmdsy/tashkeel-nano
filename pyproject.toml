@@ -1,0 +1,50 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "tashkeel-nano"
+version = "1.0.0"
+description = "Tiny Arabic diacritization (tashkeel) models and the pipeline that trains them"
+readme = "README.md"
+requires-python = ">=3.9"
+license = { text = "MIT" }
+authors = [{ name = "ahmadmhmdsy" }]
+keywords = ["arabic", "diacritization", "tashkeel", "harakat", "transformer", "nlp", "onnx"]
+classifiers = [
+  "Development Status :: 5 - Production/Stable",
+  "Intended Audience :: Developers",
+  "Intended Audience :: Science/Research",
+  "License :: OSI Approved :: MIT License",
+  "Natural Language Processing :: Tokenization",
+  "Programming Language :: Python :: 3",
+  "Topic :: Scientific/Engineering :: Artificial Intelligence",
+  "Topic :: Text Processing :: Linguistic",
+]
+dependencies = [
+  "torch>=2.0",
+  "numpy>=1.24",
+  "PyYAML>=6.0",
+]
+
+[project.optional-dependencies]
+hub = ["huggingface_hub>=0.23", "safetensors>=0.4"]
+data = ["pandas>=2.0", "pyarrow>=14.0", "huggingface_hub>=0.23"]
+demo = ["gradio>=4.44"]
+dev = ["pytest>=7.4", "huggingface_hub>=0.23"]
+
+[project.urls]
+Homepage = "https://github.com/ahmadmhmdsy/tashkeel-nano"
+Models = "https://huggingface.co/ahmadsy/tashkeel-nano-1p1m"
+Demo = "https://huggingface.co/spaces/ahmadsy/tashkeel-nano"
+
+[tool.setuptools]
+package-dir = { "" = "src" }
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["tashkeel_nano*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"

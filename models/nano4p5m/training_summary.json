@@ -1,0 +1,10 @@
+{
+  "phase": "e63s_s4_12l160",
+  "done_steps": 20000,
+  "reason": "completed",
+  "best_val_loss": 0.175752287773707,
+  "best_step": 19500,
+  "diverged": false,
+  "elapsed_s": 7970.0,
+  "total_steps_planned": 20000
+}

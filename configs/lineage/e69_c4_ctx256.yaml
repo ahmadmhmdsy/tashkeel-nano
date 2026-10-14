@@ -1,0 +1,25 @@
+# Lineage step 3 of 4 for nano1p1m: context extension 128 -> 256.
+# Warm-started from a gate-probe weight snapshot of the previous run, then
+# trained on the ctx-256 token phase.
+accum: 1
+batch_size: 64
+early_stop_patience: 12
+eval_every: 5000
+gate_eval_every: 5000
+gate_probe_batch: 256
+log_every: 100
+lr: 0.0002
+model:
+  ctx: 256
+  ffn: 256
+  hidden: 64
+  layers: 18
+  n_heads: 8
+  n_kv: 2
+optimizer: adamw
+phase: e69_c4_ctx256
+pretrained_init: runs/e67_c1_ft64_fullv3/gate_probe/best_gate_weights.pt
+save_every: 100
+tokens_phase: v3ctx256
+total_steps: 60000
+weight_decay: 0.1

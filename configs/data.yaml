@@ -1,0 +1,122 @@
+# tashkeel-nano data sources (R51).
+#
+# scripts/download_data.py reads THIS file. Nothing is hard-coded in the script:
+# add a source here and it becomes available to --source and to the pipeline.
+#
+#   python scripts/download_data.py --config configs/data.yaml --accept-license
+#   python scripts/download_data.py --source fadel,wikinews
+#   python scripts/download_data.py --list
+#
+# Layout produced:
+#   data/raw/<dir>/...          the source files, exactly as published upstream
+#   data/raw/provenance.json    one record per fetched source: url, license,
+#                               commercial-use flag, byte count, sha256
+#
+# LICENSING IS THE USER'S DECISION. The license and commercial_use fields are
+# recorded into provenance.json verbatim so a downstream reader can see what was
+# used. Sources marked requires_acceptance: true are SKIPPED unless
+# --accept-license is passed; that flag means "I have read the terms and accept
+# them for my use", nothing more.
+
+raw_dir: data/raw
+bench_dir: data/bench
+
+# Sources fetched by default. Use "all" for every non-optional source, or name
+# ids: --source fadel,wikinews
+default_sources: all
+
+catalog:
+
+  # ---------------------------------------------------------------- classical
+  fadel:
+    kind: http
+    dir: fadel
+    title: Fadel Arabic diacritization split
+    homepage: https://github.com/AliOsm/arabic-text-diacritization
+    license: "research use; check the upstream repository terms before redistribution"
+    commercial_use: unclear
+    note: >
+      train/val/test, one diacritized sentence per line. fadel_test is an
+      external gate: it is downloaded but never enters the prepared shards.
+    files:
+      train.txt: https://raw.githubusercontent.com/AliOsm/arabic-text-diacritization/master/dataset/train.txt
+      val.txt: https://raw.githubusercontent.com/AliOsm/arabic-text-diacritization/master/dataset/val.txt
+      test.txt: https://raw.githubusercontent.com/AliOsm/arabic-text-diacritization/master/dataset/test.txt
+
+  # ---------------------------------------------------------------- benchmarks
+  wikinews:
+    kind: http
+    dir: wikinews
+    title: QCRI WikiNews 2014/2024 multi-reference benchmarks
+    homepage: https://github.com/qcri/advancing-arabic-diacritization
+    license: "see the upstream repository; research use"
+    commercial_use: unclear
+    note: >
+      wikinews2014 and wikinews2024 are registered gate corpora. References carry
+      "/" alternatives inside a word; see docs/evaluation.md for the comparison
+      conditions. wikipedia_diac.jsonl is a large unregistered training pool.
+    files:
+      eval_diac.java: https://raw.githubusercontent.com/qcri/advancing-arabic-diacritization/main/Evaluation/EvalDiac.java
+      wikinews2014_multi_ref.diac: https://raw.githubusercontent.com/qcri/advancing-arabic-diacritization/main/WikiNews_Benchmarks/WikiNews_2014_Multi_Ref.txt.diac
+      wikinews2024_multi_ref.diac: https://raw.githubusercontent.com/qcri/advancing-arabic-diacritization/main/WikiNews_Benchmarks/WikiNews_2024_Multi_Ref.txt.diac
+      wikipedia_diac.jsonl: https://raw.githubusercontent.com/qcri/advancing-arabic-diacritization/main/Wikipedia_Diacritized_Corpus/Wikipedia_20240420.diac.jsonl
+
+  sadeed_25:
+    kind: http
+    dir: sadeed_25
+    title: SadeedDiac-25 expert-reviewed benchmark
+    homepage: https://huggingface.co/datasets/Misraj/SadeedDiac-25
+    license: "check the dataset card before redistribution"
+    commercial_use: unclear
+    note: >
+      A registered gate corpus. The parquet conversion branch is used so no
+      datasets library is required.
+    files:
+      sadeed25.parquet: https://huggingface.co/datasets/Misraj/SadeedDiac-25/resolve/refs%2Fconvert%2Fparquet/default/train/0000.parquet
+
+  # ---------------------------------------------------------------- training
+  sadeed_tashkeela:
+    kind: hf
+    repo: Misraj/Sadeed_Tashkeela
+    repo_type: dataset
+    dir: sadeed_tashkeela
+    title: Sadeed Tashkeela (input/output pairs, Tashkeela-derived)
+    homepage: https://huggingface.co/datasets/Misraj/Sadeed_Tashkeela
+    license: "GPL-2.0-derived (Tashkeela); copyleft"
+    commercial_use: "no - GPL-2.0 copyleft applies to derived work"
+    requires_acceptance: true
+    allow_patterns: ["data/*.parquet"]
+    note: >
+      The largest training source in the D-line corpus. GPL-2.0-derived: the
+      models trained on it are distributed under the same terms by this project.
+      Set --accept-license to fetch it.
+
+  abdou_tashkeel:
+    kind: hf
+    repo: Abdou/arabic-tashkeel-dataset
+    repo_type: dataset
+    dir: abdou_tashkeel
+    title: Abdou Arabic Tashkeel Dataset (MIT)
+    homepage: https://huggingface.co/datasets/Abdou/arabic-tashkeel-dataset
+    license: MIT
+    commercial_use: yes
+    allow_patterns: ["data/*.parquet"]
+    note: >
+      About 1.5M rows, over 90 percent Classical/religious. This project uses its
+      train/valid splits only, and NEVER its test split: abdou_test is the
+      held-out witness for the registered gate (docs/evaluation.md).
+
+  # ---------------------------------------------------------------- optional
+  qcri_diac_clone:
+    kind: git
+    dir: qcri_diac_clone
+    repo: https://github.com/qcri/advancing-arabic-diacritization.git
+    title: QCRI repository clone (Wikipedia diacritized corpus)
+    homepage: https://github.com/qcri/advancing-arabic-diacritization
+    license: "see the upstream repository"
+    commercial_use: unclear
+    optional: true
+    note: >
+      Only used as a val-split pseudo-source. The three files the pipeline
+      actually needs are already fetched by the wikinews source, so this clone is
+      optional and skipped unless named explicitly with --source.
