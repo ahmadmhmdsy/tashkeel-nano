@@ -36,7 +36,7 @@ dev = ["pytest>=7.4", "huggingface_hub>=0.23"]
 [project.urls]
 Homepage = "https://github.com/ahmadmhmdsy/tashkeel-nano"
 Models = "https://huggingface.co/ahmadsy/tashkeel-nano-1p1m"
-Demo = "https://huggingface.co/spaces/ahmadsy/tashkeel-nano"
+Demo = "https://huggingface.co/spaces/ahmadsy/tashkeel-compare"
 
 [tool.setuptools]
 package-dir = { "" = "src" }

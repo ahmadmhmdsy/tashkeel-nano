@@ -17,7 +17,7 @@ and two runnable demos (a Gradio app and a browser-only ONNX page).
 | registered 3-gate DER | **11.51 %** | **22.90 %** (fair decode — see below) |
 | decode | `centered` 256/128, NFC output | `nospace_centered`, shadda-first output |
 
-Live demo: **https://huggingface.co/spaces/ahmadsy/tashkeel-nano**
+Live demo: **https://huggingface.co/spaces/ahmadsy/tashkeel-compare**
 
 ---
 
@@ -34,6 +34,7 @@ Live demo: **https://huggingface.co/spaces/ahmadsy/tashkeel-nano**
 - [Repository layout](#repository-layout)
 - [Licensing](#licensing)
 - [Honesty notes and limitations](#honesty-notes-and-limitations)
+- [Citation](#citation)
 
 ---
 
