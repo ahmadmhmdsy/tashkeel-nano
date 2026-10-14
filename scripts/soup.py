@@ -32,6 +32,7 @@ import sys
 from pathlib import Path
 
 import torch
+import yaml
 
 REPO = Path(__file__).resolve().parent.parent
 
@@ -89,6 +90,15 @@ def soup(paths, out_path, tag):
     out_path.parent.mkdir(parents=True, exist_ok=True)
     torch.save({"model": out_sd, "step": "soup_%s_%d" % (tag, n),
                 "config": first.get("config")}, out_path)
+    # A config.yaml beside model.pt, so score_gate.py, infer.py and
+    # TashkeelNano.from_run find the architecture without being told: the soup
+    # keeps the first member's config verbatim. from_run also falls back to the
+    # copy embedded in model.pt, so an older soup directory still loads.
+    member_cfg = first.get("config") if isinstance(first, dict) else None
+    if isinstance(member_cfg, dict):
+        (out_path.parent / "config.yaml").write_text(
+            yaml.safe_dump(member_cfg, sort_keys=False, allow_unicode=True),
+            encoding="utf-8")
 
     dists = []
     for p in paths:

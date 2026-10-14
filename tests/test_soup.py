@@ -67,3 +67,34 @@ def test_soup_of_a_single_member_is_that_member(soup_cli, tmp_path):
     out, _, _ = soup_cli.soup([probe], tmp_path / "one" / "model.pt", "one")
     sd = torch.load(out, map_location="cpu", weights_only=False)
     assert torch.equal(sd["model"]["w"], torch.full((4, 4), 7.0))
+
+def test_soup_writes_a_config_beside_the_weights(soup_cli, tmp_path):
+    probes = [make_probe(tmp_path / ("weights_step%d.pt" % (i * 1000)), i) for i in (1, 2)]
+    out, _, _ = soup_cli.soup(probes, tmp_path / "out" / "model.pt", "t")
+    cfg = soup_cli.yaml.safe_load((out.parent / "config.yaml").read_text(encoding="utf-8"))
+    assert cfg == {"model": {}}
+
+
+def test_from_run_uses_the_config_embedded_in_a_soup_checkpoint(tmp_path):
+    """A soup directory holds model.pt only; from_run must still load it."""
+    import yaml
+
+    from tashkeel_nano import inference
+    from tashkeel_nano.model import build_from_config
+
+    cfg = yaml.safe_load((REPO / "configs" / "nano1p1m.yaml").read_text(encoding="utf-8"))
+    model = build_from_config(cfg, vocab_size=inference.VOCAB_SIZE)
+    torch.save({"model": model.state_dict(), "step": "soup_t_1", "config": cfg},
+               tmp_path / "model.pt")
+    assert not (tmp_path / "config.yaml").exists()
+    loaded = inference.TashkeelNano.from_run(tmp_path, preset="nano1p1m", device="cpu")
+    assert loaded.decode == "centered" and loaded.order == "nfc"
+    assert sum(p.numel() for p in loaded.model.parameters()) == 1083328
+
+
+def test_from_run_says_what_is_missing_when_there_is_no_config(tmp_path):
+    from tashkeel_nano import inference
+
+    torch.save({"model": {}}, tmp_path / "model.pt")
+    with pytest.raises(FileNotFoundError, match="embedded config"):
+        inference.TashkeelNano.from_run(tmp_path, device="cpu")

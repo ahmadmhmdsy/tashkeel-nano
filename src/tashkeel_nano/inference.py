@@ -220,11 +220,24 @@ class TashkeelNano:
                  device: str | None = None, vocab_size: int | None = None,
                  decode=None, order=None, nospace=None,
                  window=None, stride=None, preset=None) -> "TashkeelNano":
-        """Load a training run directory (or any dir with a ckpt + yaml config)."""
+        """Load a training run directory (or any dir with a ckpt + yaml config).
+
+        If the directory has no config file, the config embedded in the
+        checkpoint is used instead, so a soup artifact - scripts/soup.py writes
+        its config into model.pt - loads on its own.
+        """
         import yaml
         d = Path(run_dir)
         snap = torch.load(d / ckpt, map_location="cpu", weights_only=False)
-        cfg = yaml.safe_load((d / config).read_text(encoding="utf-8"))
+        cfg_path = d / config
+        if cfg_path.exists():
+            cfg = yaml.safe_load(cfg_path.read_text(encoding="utf-8"))
+        elif isinstance(snap, dict) and isinstance(snap.get("config"), dict):
+            cfg = snap["config"]
+        else:
+            raise FileNotFoundError(
+                "%s has no %s and %s carries no embedded config; pass config="
+                % (d, config, ckpt))
         vs = vocab_size or snap.get("vocab_size") or VOCAB_SIZE
         model = build_from_config(cfg, vocab_size=vs)
         model.load_state_dict(snap["model"] if "model" in snap else snap, strict=True)
