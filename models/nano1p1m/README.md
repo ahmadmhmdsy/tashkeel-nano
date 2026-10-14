@@ -31,9 +31,9 @@ model-index:
 # Tashkeel Nano 1.1M - Arabic Diacritization
 
 **1,083,328 parameters. 3.78% DER (CE) and 12.73% WER (CE) on the published
-**SadeedDiac-25** benchmark, scored with that benchmark's own evaluator -
-**3rd of the 11 systems on its leaderboard, ahead of GPT-4 and ahead of the
-**dedicated 1.5B Sadeed model.**
+SadeedDiac-25 benchmark, scored with that benchmark's own evaluator -
+3rd of the 11 systems on its leaderboard, ahead of GPT-4 and ahead of the
+dedicated 1.5B Sadeed model.**
 
 Every number in this card is either produced by a downloadable model
 (`ahmadsy/tashkeel-nano-1p1m`, `ahmadsy/tashkeel-nano-4p5m`) or taken from a

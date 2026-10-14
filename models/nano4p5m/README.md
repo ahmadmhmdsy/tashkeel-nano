@@ -30,8 +30,8 @@ model-index:
 # Tashkeel Nano 4.5M - Arabic Diacritization
 
 **4,488,160 parameters. DER (CE) 9.91 and WER (CE) 31.03 on the published
-**SadeedDiac-25** benchmark, scored with that benchmark's own evaluator -
-**ahead of every 7B-13B system on its leaderboard.**
+SadeedDiac-25 benchmark, scored with that benchmark's own evaluator -
+ahead of every 7B-13B system on its leaderboard.**
 
 > **Superseded.** The smaller successor
 > [`ahmadsy/tashkeel-nano-1p1m`](https://huggingface.co/ahmadsy/tashkeel-nano-1p1m)
