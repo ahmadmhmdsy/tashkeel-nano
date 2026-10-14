@@ -266,7 +266,11 @@ contamination rules and the decode arms.
     python demo/gradio/app.py          # http://127.0.0.1:7862
 
 Both ship in the repository. `demo/static/` is the edition published as the
-Hugging Face Space; `demo/gradio/` is the fuller comparison app.
+Hugging Face Space `ahmadsy/tashkeel-compare`, its card included, so uploading
+that directory’s contents publishes your own copy; `demo/gradio/` is the
+fuller comparison app. The Gradio app’s helper tests live in
+`demo/gradio/tests/`: three are pure Python and run in CI, the fourth
+(`test_app.py`) needs the `gradio` extra and a model download.
 
 ## Repository layout
 
@@ -280,8 +284,8 @@ Hugging Face Space; `demo/gradio/` is the fuller comparison app.
                         verdict_audit/ with the analysis tools
     models/nano1p1m/    the published 1p1m package (weights + card + code copy)
     models/nano4p5m/    the published 4p5m package
-    demo/gradio/        Gradio comparison app
-    demo/static/        browser-only ONNX demo (the published Space)
+    demo/gradio/        Gradio comparison app, its helper tests/ beside it
+    demo/static/        browser-only ONNX demo (the published Space, card included)
     tests/              the test suite that CI runs
     docs/               architecture, data, training, evaluation, reproduction
     data/               fetched corpora and derived beds (gitignored)

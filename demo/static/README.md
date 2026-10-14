@@ -55,6 +55,19 @@ the **Score** tab for the one pre-filled reference. They are labelled
 Every model here is a downloadable checkpoint. Nothing unpublished is compared
 anywhere in this Space.
 
+## Source code
+
+The model code, both checkpoints, the training pipeline, the registered-gate
+scorer and the sources of this page are public:
+
+**<https://github.com/ahmadmhmdsy/tashkeel-nano>**
+
+Datasets are not redistributed - the downloader fetches each corpus from its
+original host, config-driven, with a per-source license gate - so you can
+retrain the architecture, or fine-tune it on your own text, from the
+checkpoints published here (`docs/reproduction.md` in that repository is
+the end-to-end recipe).
+
 ## The four tabs
 
 1. **Compare** - one text, every selected model, with parameters, latency and a

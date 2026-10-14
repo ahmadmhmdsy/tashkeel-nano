@@ -40,6 +40,12 @@ jobs:
       - name: Test suite
         run: python -m pytest -q
 
+      - name: Demo helper tests (the Gradio app’s own scripts)
+        run: |
+          python demo/gradio/tests/test_splitter.py
+          python demo/gradio/tests/test_scoring.py
+          python demo/gradio/tests/test_registry.py
+
       - name: Inference smoke test on the shipped packages
         run: |
           python scripts/infer.py --run models/nano1p1m --config training_config.yaml \
@@ -70,4 +76,4 @@ jobs:
           echo "tracked file count: $(git ls-files | wc -l)"
 
       - name: Every python file compiles
-        run: python -m compileall -q src scripts experiments tests
+        run: python -m compileall -q src scripts experiments tests demo

@@ -50,6 +50,21 @@ much heavier environment than the inference and evaluation path needs — if you
 only want our models, use `scripts/infer.py` or the static demo in
 `demo/static/` instead.
 
+## Tests
+
+`tests/` holds the app’s own scripts; each is run directly and exits
+non-zero on the first failure:
+
+    python demo/gradio/tests/test_splitter.py
+    python demo/gradio/tests/test_scoring.py
+    python demo/gradio/tests/test_registry.py
+    python demo/gradio/tests/test_app.py        # needs this requirements.txt
+
+The first three are pure Python and run in CI. `test_app.py` drives the tab
+callbacks directly — Gradio validates at *interaction* time, so a clean boot
+proves little — so it needs `gradio` plus a model download; `test_registry.py`’s
+end-to-end case skips itself when the Hub is unreachable.
+
 ## A note on validation
 
 Gradio surfaces most component-validation errors at **interaction time**, not at
