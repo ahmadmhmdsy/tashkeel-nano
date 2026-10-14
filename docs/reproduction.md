@@ -159,8 +159,11 @@ can be traced.
         --out demo/static/models/nano4p5m.onnx --verify
 
 `--verify` runs the exported file through `onnxruntime` and compares it with the torch
-module on random ids. On the committed graphs the two agree to within 2e-5, and the
-4.5 M export is bit-identical to the shipped file. opset 17 has no
+module on random ids. `tests/test_onnx_parity.py`, which CI runs, is the stronger
+check: the committed graphs and the packages must pick the same class at every position
+of a real sentence plus random rows, with the logits differing by under 4e-5. Re-export
+is not required to be byte-identical to the shipped file (constant folding folds
+slightly differently); the parity test is what has to keep passing. opset 17 has no
 `RMSNormalization`, so each RMSNorm is traced as arithmetic.
 
 ## Parity checks that are cheap and worth doing first

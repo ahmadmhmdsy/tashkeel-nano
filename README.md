@@ -443,9 +443,12 @@ them with step 9 above, or:
         --out demo/static/models/nano4p5m.onnx --verify
 
 `--verify` runs the result through `onnxruntime` and compares it with the torch
-module on random ids. On the committed graphs the two agree to within 2e-5 (fp32
-accumulation order), and the 4.5 M export is bit-identical to the file in the
-repository.
+module on random ids. `tests/test_onnx_parity.py` checks the stronger property the
+demo claims, and CI runs it: the committed graphs and the packages must pick the
+**same diacritic class at every position** of a real sentence plus random rows (the
+logits differ by under 4e-5, so this is a tight check). Re-exporting is allowed to
+produce a file that is not byte-identical to the committed one - constant folding
+folds slightly differently - as long as that test still passes.
 
 ## Repository layout
 

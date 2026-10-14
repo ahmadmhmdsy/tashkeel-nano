@@ -29,7 +29,9 @@ jobs:
           python -m pip install torch --index-url https://download.pytorch.org/whl/cpu
 
       - name: Install the rest
-        run: python -m pip install -r requirements.txt pytest
+        # onnxruntime lets tests/test_onnx_parity.py prove that the shipped
+        # browser graphs choose the same class as the shipped packages.
+        run: python -m pip install -r requirements.txt pytest onnxruntime
 
       - name: Show the data catalog
         run: python scripts/download_data.py --list

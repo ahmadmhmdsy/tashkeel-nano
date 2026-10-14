@@ -16,7 +16,10 @@ differ only in their weights.
 opset 17 has no RMSNormalization op, so each RMSNorm is traced as its own
 arithmetic (Pow, ReduceMean, Sqrt, Div, Mul) - the same shape the committed
 graphs under demo/static/models/ have. Pass --verify to re-check the file
-against the torch module on random ids before shipping it.
+against the torch module on random ids before shipping it, and run
+tests/test_onnx_parity.py (CI does) to prove the graph still picks the same
+class as the package at every position. The serialized bytes need not match an
+earlier export - constant folding is not stable - only the predictions.
 """
 from __future__ import annotations
 

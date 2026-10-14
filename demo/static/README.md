@@ -38,6 +38,11 @@ This is a **static** Space. There is no server process and nothing is uploaded:
 both of our models ship as ONNX graphs and are executed by ONNX Runtime Web
 inside your own browser tab. Your text never leaves the page.
 
+The Python packages under `models/` are the reference implementation.
+`tests/test_onnx_parity.py` runs the shipped graphs against them in CI and
+requires the same predicted class at every position, on real text and on random
+input ids (the logits agree to under 4e-5).
+
 The two third-party models cannot run that way, so their columns on the
 **Compare** tab are **precomputed** outputs for the five built-in samples, and on
 the **Score** tab for the one pre-filled reference. They are labelled
