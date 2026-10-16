@@ -100,9 +100,9 @@ def load_np(names, tokens_dir):
             np.load(str(tokens_dir / (names[1] + ".npy"))))
 
 
-def evaluate_batch(model, val_ids, val_y, device, batch):
+def evaluate_batch(model, val_ids, val_y, device):
     """Delegates to pipeline.evals (single eval entry, per-class included)."""
-    vl, va, info = evaluate_unseen(model, val_ids, val_y, device, 128)
+    vl, va, info = evaluate_unseen(model, val_ids, val_y, device)
     evaluate_batch.last_info = info
     return vl, va
 
@@ -472,7 +472,7 @@ def main():
             mon.on_step(step, train_loss=round(float(loss_sum.item()), 4),
                         scale=round(float(scaler.get_scale()), 1))
         if step % cfg.get("eval_every", patience_log) == 0:
-            vl, va = evaluate_batch(model, val_ids, val_y, device, None)
+            vl, va = evaluate_batch(model, val_ids, val_y, device)
             info = evaluate_batch.last_info or {}
             if mon:
                 mon.on_eval(step, vl, va, extra={"per_class_acc": info.get("per_class_acc")})

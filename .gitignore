@@ -9,6 +9,9 @@
 # ---- local audit reports (analysis notes, not part of the project) ----
 README_AUDIT.md
 
+# ---- local agent tooling (vendored skills, not part of the project) ----
+/.agents/
+
 # ---- local-only model staging: step probes are rebuildable with scripts/soup.py ----
 models/*/weights/
 models/*/soup_members/
@@ -33,6 +36,8 @@ venv/
 
 # ---- logs and editor/OS noise ----
 *.log
+# ...except the shipped verdict-audit evidence log
+!experiments/verdict_audit/probe_trajectory.log
 .DS_Store
 Thumbs.db
 .vscode/

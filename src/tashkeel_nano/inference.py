@@ -90,14 +90,19 @@ ORDERS = ("nfc", "shadda_first")
 
 
 def strip_marks(text: str) -> str:
-    """Bare text: drop every combining mark, then NFC-normalize."""
+    """Bare text: NFC-normalize first, then drop every combining mark.
+
+    Normalizing first composes a decomposed hamza/madda onto its base letter
+    (U+0627 U+0654 -> U+0623), so the letter's identity survives; a mark that
+    does not compose (a bare combinant) is still dropped.
+    """
     out = []
-    for ch in text:
+    for ch in unicodedata.normalize("NFC", text):
         o = ord(ch)
         if any(lo <= o <= hi for lo, hi in MARK_RANGES):
             continue
         out.append(ch)
-    return unicodedata.normalize("NFC", "".join(out))
+    return "".join(out)
 
 
 def _is_mark(ch: str) -> bool:
@@ -232,9 +237,14 @@ class TashkeelNano:
         cfg_path = d / config
         if cfg_path.exists():
             cfg = yaml.safe_load(cfg_path.read_text(encoding="utf-8"))
-        elif isinstance(snap, dict) and isinstance(snap.get("config"), dict):
+        elif isinstance(snap, dict) and snap.get("config") is not None:
             cfg = snap["config"]
+            if isinstance(cfg, str):
+                # train.py/soup.py store the config as json.dumps(cfg).
+                cfg = json.loads(cfg)
         else:
+            cfg = None
+        if not isinstance(cfg, dict):
             raise FileNotFoundError(
                 "%s has no %s and %s carries no embedded config; pass config="
                 % (d, config, ckpt))

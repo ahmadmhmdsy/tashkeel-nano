@@ -7,7 +7,7 @@
  *
  * Fidelity notes (these are deliberate, not incidental):
  *  - Tokenization is by CODE POINT, like the Python reference.
- *  - stripMarks drops the same mark ranges and then applies NFC.
+ *  - stripMarks applies NFC and then drops the same mark ranges.
  *  - nano1p1m uses the CENTERED sliding-window decode and emits NFC.
  *  - nano4p5m uses the HARD-CHUNK decode and emits SHADDA-FIRST (it does not
  *    normalize), which is what that published package actually does.
@@ -99,16 +99,16 @@ export function isArabicBase(ch) {
 
 const MARK_RANGES = [[0x064b, 0x0652], [0x0670, 0x0670], [0x0653, 0x065f], [0x06d6, 0x06ed]];
 
-/** Bare text: drop every combining mark, then NFC-normalize. */
+/** Bare text: NFC-normalize first, then drop every combining mark. */
 export function stripMarks(text) {
   let out = "";
-  for (const ch of text) {
+  for (const ch of text.normalize("NFC")) {
     const o = ch.codePointAt(0);
     let drop = false;
     for (const r of MARK_RANGES) if (o >= r[0] && o <= r[1]) { drop = true; break; }
     if (!drop) out += ch;
   }
-  return out.normalize("NFC");
+  return out;
 }
 
 // ------------------------------------------------------------------ decoding

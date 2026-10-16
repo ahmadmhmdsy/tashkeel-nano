@@ -42,6 +42,15 @@ def test_strip_marks_drops_marks_and_normalizes():
     assert INF.strip_marks("abc 123") == "abc 123"
 
 
+def test_strip_marks_keeps_a_decomposed_letter_before_dropping_it():
+    # NFD alef+hamza is ONE letter; NFC must run first or the hamza is deleted
+    # and the base letter silently changes (ا -> أ is a different letter).
+    assert INF.strip_marks("\u0627\u0654") == "\u0623"          # ا+hamza -> أ
+    assert INF.strip_marks("\u0627\u0653") == "\u0622"          # ا+madda -> آ
+    # a combinant that does NOT compose into a base letter is still dropped
+    assert INF.strip_marks("\u0628\u0654") == "\u0628"
+
+
 def test_reorder_shadda_first_moves_shadda_to_the_front_of_the_run():
     vowel_first = "\u0628\u064e\u0651"
     assert INF.reorder_shadda_first(vowel_first) == "\u0628\u0651\u064e"

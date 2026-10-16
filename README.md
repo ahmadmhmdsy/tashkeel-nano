@@ -23,6 +23,11 @@ lists what each command creates and how big it is.
 | registered 3-gate DER | **11.51 %** | **22.90 %** (fair decode, output normalised to NFC — see below) |
 | decode | `centered` 256/128, NFC output — preset and fair arm | `nospace_centered`, NFC — fair arm; the package preset is `single`, spaced and shadda-first |
 
+**Prefer the 1.1 M model.** It is ~4.1x smaller yet scores better on every gate
+(11.51 vs 22.90 on the registered mean), and only it emits canonical NFC - the
+4.5 M package's default output is the non-canonical shadda-first order. See
+[Results](#results).
+
 Live demo: **https://huggingface.co/spaces/ahmadsy/tashkeel-compare**
 
 ---
@@ -39,6 +44,7 @@ Live demo: **https://huggingface.co/spaces/ahmadsy/tashkeel-compare**
 - [Evaluate](#evaluate)
 - [Demos](#demos)
 - [Repository layout](#repository-layout)
+- [Glossary](#glossary)
 - [Licensing](#licensing)
 - [Honesty notes and limitations](#honesty-notes-and-limitations)
 - [Citation](#citation)
@@ -55,7 +61,7 @@ parameters to 13 B.
 These two models are **character-level bidirectional Transformer encoders with a
 15-class per-position head**. They are deliberately tiny: the point is the
 size/quality trade. On the SadeedDiac-25 leaderboard — scored with that
-benchmark’s own letter-level DER (CE), which is *not* the word-level metric used
+benchmark’s own letter-level DER (CE = case endings), which is *not* the word-level metric used
 below — the 1.08 M model’s 3.78 is ahead of every quoted system above 1.5 B
 parameters (the six 7 B–13 B rows run 26–79) and behind only Claude-3.7-Sonnet and
 Gemini-Flash-2.0. The whole table, each row marked *quoted* or *measured here*,
@@ -172,9 +178,10 @@ package emits. Two of them matter:
 Both models share two input behaviours worth knowing:
 
 - **Existing diacritics in the input are stripped and re-predicted.** `strip_marks()`
-  drops every combining mark (U+064B-U+0652, U+0670, U+0653-U+065F,
-  U+06D6-U+06ED) and NFC-normalises what is left, so fully vocalised text comes
-  back re-marked by the model rather than echoed.
+  NFC-normalises first - so a decomposed hamza/madda composes onto its base
+  letter before anything is dropped - then removes every combining mark
+  (U+064B-U+0652, U+0670, U+0653-U+065F, U+06D6-U+06ED), so fully vocalised text
+  comes back re-marked by the model rather than echoed.
 - **Text longer than the window is decoded in overlapping windows.** `centered`
   walks the line in windows of `--window` (256 for 1p1m) advancing by `--stride`
   (128), and each character keeps the mark from the window whose centre is
@@ -185,7 +192,9 @@ Both models share two input behaviours worth knowing:
 ### Command line
 
     python scripts/infer.py --repo ahmadsy/tashkeel-nano-1p1m --text "السلام عليكم"
-    python scripts/infer.py --repo ahmadsy/tashkeel-nano-4p5m --file in.txt --out out.txt
+    # 4.5 M: pass the fair decode, or you get the shadda-first 36.89 % output
+    python scripts/infer.py --repo ahmadsy/tashkeel-nano-4p5m \
+        --decode nospace_centered --order nfc --file in.txt --out out.txt
 
     # the committed local copy of the 1.1 M package, no download needed
     python scripts/infer.py --run models/nano1p1m --config training_config.yaml \
@@ -267,6 +276,10 @@ counts that must match are listed in [docs/reproduction.md](docs/reproduction.md
     python scripts/train.py    --config configs/lineage/e67_c1_ft64_fullv3.yaml
     python scripts/train.py    --config configs/lineage/e69_c4_ctx256.yaml
     python scripts/train.py    --config configs/nano1p1m.yaml
+    #    the init chain is part of the recipe: e67_p1_lm64 reads the v3s10 bed;
+    #    e69_c4_ctx256 warm-starts from e67_c1_ft64_fullv3/gate_probe/
+    #    best_gate_weights.pt, not its final/ (e67_c1 is set for 200,000 steps).
+    #    docs/reproduction.md has the full table.
 
     # 7. the published 1.1 M artifact is NOT the final step: it is the uniform
     #    mean of the 12 step probes below. With the same probe set the mean is
@@ -316,6 +329,7 @@ treat them as a budget rather than a manifest.
 | `data/v3ctx256/tokens/` | step 3, `tokenize_data.py --phase v3ctx256` — the lineage bed | ~6.0 GB | no |
 | `data/v3s10/tokens/` | step 3, `tokenize_data.py --phase v3s10` — a 10 % prefix of `v3`, read by `e67_p1_lm64` | ~3.0 GB | no |
 | `data/stage1/tokens/` | step 4, `prep_rawlm.py` | ~5.1 GB | no |
+| **subtotal, data beds** | steps 1–4 | **≈34 GB** | no |
 | `runs/` | steps 4–7, `train.py` / `train_lm.py` / `soup.py` | checkpoints + optimizer state | no |
 | `out/` | `score_gate.py --out-json` | small | no |
 
@@ -467,6 +481,24 @@ folds slightly differently - as long as that test still passes.
     tests/              the test suite that CI runs
     docs/               architecture, data, training, evaluation, reproduction
     data/               fetched corpora and derived beds (not in git; see Disk)
+
+## Glossary
+
+- **bed** — a tokenized corpus (character ids + diacritic labels) at a fixed
+  context length; a run trains on one bed.
+- **gate** — a held-out corpus scored under the registered word-level metric.
+- **arm** — one decode setting (window, stride, mark order, whitespace handling);
+  a model is compared across arms.
+- **probes / soup** — the published 1.1 M weights are the uniform mean ("soup")
+  of 12 training checkpoints ("probes", steps 32,500–60,000).
+- **witness** — `abdou_test`, a gate no model in this line was trained on; it is
+  reported separately and never folded into the mean.
+- **geminate** — a doubled consonant, written with shadda; the position where NFC
+  and shadda-first mark order disagree.
+- **stage-1 LM** — the shared 28L x 272 causal character LM (30.1 M parameters)
+  that both published models warm-start from (steps 4–5 above).
+- **CE** — case endings; Sadeed's `DER (CE)` scores exactly those final short
+  vowels.
 
 ## Licensing
 

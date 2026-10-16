@@ -4,8 +4,9 @@
     python scripts/infer.py --repo ahmadsy/tashkeel-nano-1p1m --text "السلام عليكم"
     python scripts/infer.py --repo ahmadsy/tashkeel-nano-4p5m --file in.txt --out out.txt
 
-    # a local run directory (runs/<phase>/final/{model.pt,config.yaml})
-    python scripts/infer.py --run runs/e63s_s4_12l160/final --text "مرحبا"
+    # a committed package, no download needed (models/nano1p1m/)
+    python scripts/infer.py --run models/nano1p1m --config training_config.yaml \
+        --text "مرحبا"
 
     # pick a decode arm explicitly
     python scripts/infer.py --repo ahmadsy/tashkeel-nano-1p1m --decode nospace_centered

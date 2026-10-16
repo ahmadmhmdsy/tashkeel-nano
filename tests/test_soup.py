@@ -1,5 +1,6 @@
 """Weight soup: uniform fp32 mean, dtype preserved, members recorded."""
 import importlib.util
+import json
 from pathlib import Path
 
 import pytest
@@ -22,8 +23,9 @@ def soup_cli():
 
 
 def make_probe(path, value, dtype=torch.float32):
+    # train.py stores the config as json.dumps(cfg) -- a string, not a dict.
     torch.save({"model": {"w": torch.full((4, 4), float(value), dtype=dtype)},
-                "step": 0, "config": {"model": {}}}, path)
+                "step": 0, "config": json.dumps({"model": {}})}, path)
     return path
 
 
@@ -84,8 +86,8 @@ def test_from_run_uses_the_config_embedded_in_a_soup_checkpoint(tmp_path):
 
     cfg = yaml.safe_load((REPO / "configs" / "nano1p1m.yaml").read_text(encoding="utf-8"))
     model = build_from_config(cfg, vocab_size=inference.VOCAB_SIZE)
-    torch.save({"model": model.state_dict(), "step": "soup_t_1", "config": cfg},
-               tmp_path / "model.pt")
+    torch.save({"model": model.state_dict(), "step": "soup_t_1",
+                "config": json.dumps(cfg)}, tmp_path / "model.pt")
     assert not (tmp_path / "config.yaml").exists()
     loaded = inference.TashkeelNano.from_run(tmp_path, preset="nano1p1m", device="cpu")
     assert loaded.decode == "centered" and loaded.order == "nfc"

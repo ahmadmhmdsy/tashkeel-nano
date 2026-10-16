@@ -26,7 +26,8 @@ that level, so a path you read inside these files maps as follows:
 | `data/diac/prepared_rebuilt/...` | `data/prepared_rebuilt/...` |
 | `data/diac/v3*/tokens/...` | `data/v3*/tokens/...` |
 | `runs/diac/<run>/...` | `runs/<run>/...` |
-| `research/`, `verdict_audit/` | upstream-only records, not shipped |
+| `research/experiments.yaml`, `research/EXPERIMENTS.md` | `research/` (verbatim) |
+| `research/verdict_audit/` records | `experiments/verdict_audit/` (tools + `evidence/`, `parts/`) |
 
 The same applies to the `runs/diac/...` provenance lines in
 `models/nano1p1m/README.md` and `models/nano4p5m/README.md`: they name run records

@@ -77,9 +77,10 @@ def analyze_word(word: str, canonical: bool = True):
 
 
 def strip_marks(text: str) -> str:
-    '''Bare text: drop every combining mark, then NFC-normalise.'''
-    return unicodedata.normalize(
-        'NFC', ''.join(ch for ch in text if ch not in DIACRITIC_CHARS)
+    '''Bare text: NFC-normalise first, then drop every combining mark.'''
+    return ''.join(
+        ch for ch in unicodedata.normalize('NFC', text)
+        if ch not in DIACRITIC_CHARS
     )
 
 

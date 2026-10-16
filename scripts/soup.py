@@ -95,6 +95,11 @@ def soup(paths, out_path, tag):
     # keeps the first member's config verbatim. from_run also falls back to the
     # copy embedded in model.pt, so an older soup directory still loads.
     member_cfg = first.get("config") if isinstance(first, dict) else None
+    if isinstance(member_cfg, str):
+        try:
+            member_cfg = json.loads(member_cfg)   # train.py stores json.dumps(cfg)
+        except ValueError:
+            member_cfg = None
     if isinstance(member_cfg, dict):
         (out_path.parent / "config.yaml").write_text(
             yaml.safe_dump(member_cfg, sort_keys=False, allow_unicode=True),

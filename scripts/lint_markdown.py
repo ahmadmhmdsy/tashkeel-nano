@@ -25,7 +25,7 @@ except ImportError:                                   # pragma: no cover
 REPO = Path(__file__).resolve().parent.parent
 #: working directories whose markdown is not a published page
 SKIP = {".git", ".venv", "__pycache__", "data", "runs", "out", "scratch",
-        "experiments"}
+        "experiments", "research"}
 
 
 def pages():
